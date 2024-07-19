@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:58:08 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/18 17:56:27 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:08:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,35 @@
 # define CUB3D_H
 
 # include "get_next_line.h"
+# include "./libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <stdbool.h>
+
+typedef struct s_pars_info {
+	bool	north;
+	bool	south;
+	bool	east;
+	bool	weast;
+	bool	floor;
+	bool	ceiling;
+}	t_pars_info; 
+
+typedef struct s_map_data {
+	char		*f_color;
+	char		*c_color;
+	char		*no_path;
+	char		*so_path;
+	char		*we_path;
+	char		*ea_path;
+	char		**map;
+	t_pars_info	info;
+}	t_map_data;
+
+//ERRORS
+void    err_exit(char *s);
+
 
 
 #endif

@@ -10,6 +10,7 @@ NAME = cub3D
 all: $(NAME)
 
 $(NAME): $(OBJ)
+	make -C libft
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 %.o : %.c $(HEADER)
