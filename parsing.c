@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 23:24:11 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/22 01:09:10 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/22 18:30:01 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,18 @@ int parscolors(t_map_data *data)
 	return (0);
 }
 
+int	checkafternewline(char *line)
+{
+	int i;
+
+	i = 0;
+	while (line[i] == ' ' || line[i] == '\t')
+		i++;
+	if (line[i] == '\n')
+		return (1);
+	return (0);
+}
+
 int	parslinemap(char *map)
 {
 	int i;
@@ -338,13 +350,14 @@ int	parslinemap(char *map)
 			&& map[i] != ' ' && map[i] != 'N' && map[i] != 'E'
 			&& map[i] != 'S' && map[i] != 'W')
 			return (1);
-		if (map[i] == '\n' && map[i + 1] == '\n')
+		if (map[i] == '\n' && checkafternewline(&map[i + 1]))
 			return (1);
 		if (map[i] == 'N' || map[i] == 'E' || map[i] == 'S' || map[i] == 'W')
 			pos++;
 	}
 	if (pos != 1)
 		return (1);
+	return (0);
 }
 
 char	*getlinemap(char **map)
@@ -353,7 +366,7 @@ char	*getlinemap(char **map)
 	char	*tmp;
 	int		i;
 	
-	i = -2;
+	i = -1;
 	linemap = ft_strdup("");
 	while (map[++i])
 	{
@@ -366,7 +379,6 @@ char	*getlinemap(char **map)
 
 char **findthemap(char **data)
 {
-	char	**map;
 	int		i;
 	int		j;
 
@@ -406,16 +418,57 @@ int parsspaces(char **map)
 	return (0);
 }
 
+int checkborders(char *line)
+{
+	int i;
+
+	i = 0;
+	while (line[i] == ' ' || line[i] == '\t')
+		i++;
+	if (line[i] != '1')
+		return (1);
+	i = ft_strlen(line) - 1;
+	while (i && (line[i] == ' ' || line[i] == '\t'))
+		i--;
+	if (line[i] != '1')
+		return (1);
+	return (0);
+}
+
 int checkones(t_map_data *data)
 {
 	int i;
 	int j;
 
-	while (data->cub_map[0][i])
+	i = -1;
+	while (data->cub_map[0][++i])
 	{
-		if (data->cub_map[0][i] != '1' && data->cub_map[0][i] != ' ' && data->cub_map[0][i] != '\t')
+		if (data->cub_map[0][i] != '1' && data->cub_map[0][i] != ' '
+			&& data->cub_map[0][i] != '\t')
 			return (1);
 	}
+	i = -1;
+	while (data->cub_map[++i])
+	{
+		if (checkborders(data->cub_map[i]))
+			return (1);
+	}
+	j = -1;
+	while (data->cub_map[i - 1][++j])
+	{
+		if (data->cub_map[i - 1][j] != '1' && data->cub_map[i - 1][j] != ' '
+			&& data->cub_map[i - 1][j] != '\t')
+			return (1);
+	}
+	return (0);
+}
+void	printmap(char **map)
+{
+	int i;
+
+	i = 0;
+	while (map[i])
+		printf("%s\n", map[i++]);
 }
 
 int parsmap(t_map_data *data)
@@ -429,11 +482,14 @@ int parsmap(t_map_data *data)
 	linemap = getlinemap(map);
 	if (!linemap)
 		return (1);
-	if (parslinemap(linemap))
+	if (parslinemap(linemap)) //bug in /n after /n
 		return (1);
 	data->cub_map = ft_split(linemap, '\n');
-	if (parsspaces(data->cub_map));
-		
+	// if (parsspaces(data->cub_map))
+	// 	return (1);
+	if (checkones(data))
+		return (1);
+	return (0);
 }
 
 void	ft_parsing(int argc, char **argv, t_map_data *data)
@@ -446,6 +502,8 @@ void	ft_parsing(int argc, char **argv, t_map_data *data)
 		exit(1);
 	if (parscolors(data))
 		printf("err\n");
+	if (parsmap(data))
+		printf("err in map");
 }
 
 int main(int argc, char **argv)
