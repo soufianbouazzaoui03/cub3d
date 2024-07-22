@@ -1,7 +1,7 @@
 # -*- MakeFile -*-
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 SRC = parsing.c get_next_line.c get_next_line_utils.c
 OBJ = $(SRC:%.c=%.o)
 HEADER = cub3d.h

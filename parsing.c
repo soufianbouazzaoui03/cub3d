@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 23:24:11 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/21 16:05:46 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/22 01:09:10 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,10 +268,10 @@ int commacounter(char *line)
 	c = 0;
 	while (line[++i])
 	{
-		if (line[i] == 'c')
+		if (line[i] == ',')
 			c++;
 	}
-	if (c != 3)
+	if (c != 2)
 		return (1);
 	return (0);
 }
@@ -280,14 +280,29 @@ int checknumbers(char **nums)
 {
 	int num[3];
 
+	if (!nums[0] || !nums[1] || !nums[2])
+		return (1);
 	num[0] = ft_atoi(nums[0]);
 	num[1] = ft_atoi(nums[1]);
-	num[2] = ft_atoi(nums[3]);
+	num[2] = ft_atoi(nums[2]);
 	if ((num[0] >= 0 && num[0] <= 255)
 		&& (num[1] >= 0 && num[1] <= 255)
 		&& (num[2] >= 0 && num[2] <= 255))
 		return (0);
 	return (1);
+}
+
+int checkforc(char *line)
+{
+	int i;
+
+	i = -1;
+	while(line[++i])
+	{
+		if (!ft_isdigit(line[i]) && line[i] != ',' && line[i] != '\n' && line[i] != ' ')
+			return (1);
+	}
+	return (0);
 }
 
 int parscolors(t_map_data *data)
@@ -299,13 +314,126 @@ int parscolors(t_map_data *data)
 	i = -1;
 	if (!data->f_color || !data->f_color)
 		return (1);
+	
 	if (commacounter(data->c_color) || commacounter(data->f_color))
-		return (1);
+		return (printf("here\n"), 1);
+	if (checkforc(data->c_color) || checkforc(data->f_color))
+		return (printf("hi\n"), 1);
 	ccors = ft_split(data->c_color, ',');
 	fcors = ft_split(data->f_color, ',');
 	if (checknumbers(fcors) || checknumbers(ccors))
 		return (1);
 	return (0);
+}
+
+int	parslinemap(char *map)
+{
+	int i;
+	int	pos;
+	
+	(1) && (i = -1, pos = 0);
+	while (map[++i])
+	{
+		if (map[i] != '1' && map[i] != '0' && map[i] != '\n'
+			&& map[i] != ' ' && map[i] != 'N' && map[i] != 'E'
+			&& map[i] != 'S' && map[i] != 'W')
+			return (1);
+		if (map[i] == '\n' && map[i + 1] == '\n')
+			return (1);
+		if (map[i] == 'N' || map[i] == 'E' || map[i] == 'S' || map[i] == 'W')
+			pos++;
+	}
+	if (pos != 1)
+		return (1);
+}
+
+char	*getlinemap(char **map)
+{
+	char	*linemap;
+	char	*tmp;
+	int		i;
+	
+	i = -2;
+	linemap = ft_strdup("");
+	while (map[++i])
+	{
+		tmp = ft_strdup(linemap);
+		linemap = ft_strjoin(tmp, map[i]);
+		free(tmp);
+	}
+	return (linemap);
+}
+
+char **findthemap(char **data)
+{
+	char	**map;
+	int		i;
+	int		j;
+
+	i = -1;
+	while(data[++i])
+	{
+		j = 0;
+		while (data[i][j] == ' ' || data[i][j] == '\t' || data[i][j] == '\n')
+			j++;
+		if (data[i][j] == '1')
+			return (&data[i]);
+	}
+	return (NULL);
+}
+
+int parsspaces(char **map)
+{
+	int i;
+	int j;
+
+	i = -1;
+	while (map[++i])
+	{
+		j = -1;
+		while (map[++j])
+		{
+			if (map[i][j] == ' ' && (map[i][j + 1] != '1'
+				&& map[i + 1][j] != '1' && map[i - 1][j] != '1'
+				&& map[i][j - 1] != '1' && map[i][j + 1] != ' '
+				&& map[i + 1][j] != ' ' && map[i - 1][j] != ' '
+				&& map[i][j - 1] != ' ' && map[i][j + 1] != '\t'
+				&& map[i + 1][j] != '\t' && map[i - 1][j] != '\t'
+				&& map[i][j - 1] != '\t'))
+				return (1);
+		}
+	}
+	return (0);
+}
+
+int checkones(t_map_data *data)
+{
+	int i;
+	int j;
+
+	while (data->cub_map[0][i])
+	{
+		if (data->cub_map[0][i] != '1' && data->cub_map[0][i] != ' ' && data->cub_map[0][i] != '\t')
+			return (1);
+	}
+}
+
+int parsmap(t_map_data *data)
+{
+	char	**map;
+	char	*linemap;
+	
+	map = findthemap(data->map);
+	if (!map)
+		return (1);
+	linemap = getlinemap(map);
+	if (!linemap)
+		return (1);
+	if (parslinemap(linemap))
+		return (1);
+	data->cub_map = ft_split(linemap, '\n');
+	if (parsspaces(data->cub_map));
+		
 }
 
 void	ft_parsing(int argc, char **argv, t_map_data *data)
@@ -316,6 +444,8 @@ void	ft_parsing(int argc, char **argv, t_map_data *data)
 		exit(1);
 	if(parsinfos(data))
 		exit(1);
+	if (parscolors(data))
+		printf("err\n");
 }
 
 int main(int argc, char **argv)

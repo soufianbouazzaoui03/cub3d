@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:58:08 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/19 17:08:48 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/22 01:05:09 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdbool.h>
+# include <stdio.h>
 
 typedef struct s_pars_info {
 	bool	north;
@@ -37,6 +38,9 @@ typedef struct s_map_data {
 	char		*we_path;
 	char		*ea_path;
 	char		**map;
+	char		**cub_map;
+	int			h;
+	int			w;
 	t_pars_info	info;
 }	t_map_data;
 

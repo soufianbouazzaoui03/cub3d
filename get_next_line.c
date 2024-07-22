@@ -6,13 +6,13 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 17:14:01 by soel-bou          #+#    #+#             */
-/*   Updated: 2023/12/15 20:19:30 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/20 21:24:47 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_strjoin(char *s1, char *s2)
+static char	*ft_strjoin_gnl(char *s1, char *s2)
 {
 	char	*newstr;
 	int		j;
@@ -56,7 +56,7 @@ static char	*readline(int fd, char *buffer, char *aftern)
 		if (!aftern)
 			aftern = ft_strdup("");
 		tmp = aftern;
-		aftern = ft_strjoin(tmp, buffer);
+		aftern = ft_strjoin_gnl(tmp, buffer);
 		free(tmp);
 		tmp = NULL;
 		if (ft_strchr(buffer, '\n'))
