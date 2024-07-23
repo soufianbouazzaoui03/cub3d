@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 23:24:11 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/23 14:37:41 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/23 15:09:43 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,12 +397,12 @@ int parsborders(t_map_data *data, int i, int j, char c)
 	char **map;
 
 	map  = data->cub_map;
-	if (map[i][j + 1])
+	if (j < data->w)
 	{
 		if (map[i][j] == c && (map[i][j + 1] == ' ' ||  map[i][j + 1] == '\t'))
 			return (1);
 	}
-	if (j > 0 && map[i][j - 1])
+	if (j > 0)
 	{
 		if (map[i][j] == c && (map[i][j - 1] == ' ' || map[i][j - 1] == '\t'))
 			return (1);
@@ -410,9 +410,9 @@ int parsborders(t_map_data *data, int i, int j, char c)
 	if (i < data->h)
 	{
 		if (map[i][j] == c && (map[i + 1][j] == ' ' || map[i + 1][j] == '\t'))
-			return (1);
+			return ( 1);
 	}
-	if (i > 0 && map[i - 1][j])
+	if (i > 0)
 	{
 		if (map[i][j] == c && (map[i - 1][j] == ' ' || map[i - 1][j] == '\t'))
 			return (1);
@@ -431,7 +431,7 @@ int parsspaces(t_map_data *data)
 	while (map[++i])
 	{
 		j = -1;
-		while (map[++j])
+		while (map[i][++j])
 		{
 			if (parsborders(data, i, j, '0') || parsborders(data, i, j, 'N')
 				|| parsborders(data, i, j,'E') || parsborders(data, i, j, 'S')
