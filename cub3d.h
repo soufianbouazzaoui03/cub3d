@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:58:08 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/22 01:05:09 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:13:15 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ typedef struct s_map_data {
 	char		*ea_path;
 	char		**map;
 	char		**cub_map;
+	char		direction;
 	int			h;
 	int			w;
+	int			farr[3];
+	int			carr[3];
 	t_pars_info	info;
 }	t_map_data;
 

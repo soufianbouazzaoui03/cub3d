@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 23:24:11 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/22 18:30:01 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/23 14:37:41 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,18 +276,16 @@ int commacounter(char *line)
 	return (0);
 }
 
-int checknumbers(char **nums)
+int checknumbers(char **nums, int *colors)
 {
-	int num[3];
-
 	if (!nums[0] || !nums[1] || !nums[2])
 		return (1);
-	num[0] = ft_atoi(nums[0]);
-	num[1] = ft_atoi(nums[1]);
-	num[2] = ft_atoi(nums[2]);
-	if ((num[0] >= 0 && num[0] <= 255)
-		&& (num[1] >= 0 && num[1] <= 255)
-		&& (num[2] >= 0 && num[2] <= 255))
+	colors[0] = ft_atoi(nums[0]);
+	colors[1] = ft_atoi(nums[1]);
+	colors[2] = ft_atoi(nums[2]);
+	if ((colors[0] >= 0 && colors[0] <= 255)
+		&& (colors[1] >= 0 && colors[1] <= 255)
+		&& (colors[2] >= 0 && colors[2] <= 255))
 		return (0);
 	return (1);
 }
@@ -321,7 +319,7 @@ int parscolors(t_map_data *data)
 		return (printf("hi\n"), 1);
 	ccors = ft_split(data->c_color, ',');
 	fcors = ft_split(data->f_color, ',');
-	if (checknumbers(fcors) || checknumbers(ccors))
+	if (checknumbers(fcors, data->farr) || checknumbers(ccors, data->carr))
 		return (1);
 	return (0);
 }
@@ -394,24 +392,50 @@ char **findthemap(char **data)
 	return (NULL);
 }
 
-int parsspaces(char **map)
+int parsborders(t_map_data *data, int i, int j, char c)
 {
+	char **map;
+
+	map  = data->cub_map;
+	if (map[i][j + 1])
+	{
+		if (map[i][j] == c && (map[i][j + 1] == ' ' ||  map[i][j + 1] == '\t'))
+			return (1);
+	}
+	if (j > 0 && map[i][j - 1])
+	{
+		if (map[i][j] == c && (map[i][j - 1] == ' ' || map[i][j - 1] == '\t'))
+			return (1);
+	}
+	if (i < data->h)
+	{
+		if (map[i][j] == c && (map[i + 1][j] == ' ' || map[i + 1][j] == '\t'))
+			return (1);
+	}
+	if (i > 0 && map[i - 1][j])
+	{
+		if (map[i][j] == c && (map[i - 1][j] == ' ' || map[i - 1][j] == '\t'))
+			return (1);
+	}
+	return (0);
+}
+
+int parsspaces(t_map_data *data)
+{
+	char **map;
 	int i;
 	int j;
 
+	map = data->cub_map;
 	i = -1;
 	while (map[++i])
 	{
 		j = -1;
 		while (map[++j])
 		{
-			if (map[i][j] == ' ' && (map[i][j + 1] != '1'
-				&& map[i + 1][j] != '1' && map[i - 1][j] != '1'
-				&& map[i][j - 1] != '1' && map[i][j + 1] != ' '
-				&& map[i + 1][j] != ' ' && map[i - 1][j] != ' '
-				&& map[i][j - 1] != ' ' && map[i][j + 1] != '\t'
-				&& map[i + 1][j] != '\t' && map[i - 1][j] != '\t'
-				&& map[i][j - 1] != '\t'))
+			if (parsborders(data, i, j, '0') || parsborders(data, i, j, 'N')
+				|| parsborders(data, i, j,'E') || parsborders(data, i, j, 'S')
+				|| parsborders(data,i, j, 'W'))
 				return (1);
 		}
 	}
@@ -471,6 +495,31 @@ void	printmap(char **map)
 		printf("%s\n", map[i++]);
 }
 
+void	getdemonsion(t_map_data *data)
+{
+	int	i;
+	int	j;
+
+	(1) && (data->h = 0, data->w = 0, j = -1, i = -1);
+	while (data->cub_map[++i])
+	{
+		if (data->w < (int)ft_strlen(data->cub_map[i]))
+			data->w = (int)ft_strlen(data->cub_map[i]);
+	}
+	data->h = i;
+	i = -1;
+	while (data->cub_map[++i])
+	{
+		j = -1;
+		while (data->cub_map[i][++j])
+		{
+			if (data->cub_map[i][j] == 'N' || data->cub_map[i][j] == '0'
+				|| data->cub_map[i][j] == 'W' || data->cub_map[i][j] == 'S')
+				data->direction = data->cub_map[i][j];
+		}
+	}
+}
+
 int parsmap(t_map_data *data)
 {
 	char	**map;
@@ -485,8 +534,9 @@ int parsmap(t_map_data *data)
 	if (parslinemap(linemap)) //bug in /n after /n
 		return (1);
 	data->cub_map = ft_split(linemap, '\n');
-	// if (parsspaces(data->cub_map))
-	// 	return (1);
+	getdemonsion(data);
+	if (parsspaces(data))
+		return (1);
 	if (checkones(data))
 		return (1);
 	return (0);
@@ -520,4 +570,8 @@ int main(int argc, char **argv)
 	printf("here->%s", data.ea_path);
 	printf("here->%s", data.we_path);
 	printf("here->%s", data.so_path);
+	printf("%d\n%d\n%c", data.h, data.w, data.direction);
+	printf("%d, %d, %d\n", data.farr[0], data.farr[1], data.farr[2]);
+	printf("%d, %d, %d\n", data.carr[0], data.carr[1], data.carr[2]);
+	printmap(data.cub_map);
 }
