@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 23:24:11 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/07/23 15:09:43 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/07/24 17:46:54 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,8 @@ int commacounter(char *line)
 
 	i = -1;
 	c = 0;
+	if (!line)
+		return (1);
 	while (line[++i])
 	{
 		if (line[i] == ',')
@@ -349,7 +351,7 @@ int	parslinemap(char *map)
 			&& map[i] != 'S' && map[i] != 'W')
 			return (1);
 		if (map[i] == '\n' && checkafternewline(&map[i + 1]))
-			return (1);
+			return (printf("here\n"),1);
 		if (map[i] == 'N' || map[i] == 'E' || map[i] == 'S' || map[i] == 'W')
 			pos++;
 	}
@@ -551,9 +553,15 @@ void	ft_parsing(int argc, char **argv, t_map_data *data)
 	if(parsinfos(data))
 		exit(1);
 	if (parscolors(data))
+	{
 		printf("err\n");
+		exit(1);
+	}
 	if (parsmap(data))
+	{
 		printf("err in map");
+		exit(1);
+	}
 }
 
 int main(int argc, char **argv)
@@ -566,12 +574,12 @@ int main(int argc, char **argv)
 	data.c_color = NULL;
 	data.f_color = NULL;
 	ft_parsing(argc, argv, &data);
-	printf("here->%s", data.no_path);
-	printf("here->%s", data.ea_path);
-	printf("here->%s", data.we_path);
-	printf("here->%s", data.so_path);
-	printf("%d\n%d\n%c", data.h, data.w, data.direction);
-	printf("%d, %d, %d\n", data.farr[0], data.farr[1], data.farr[2]);
-	printf("%d, %d, %d\n", data.carr[0], data.carr[1], data.carr[2]);
-	printmap(data.cub_map);
+	// printf("here->%s", data.no_path);
+	// printf("here->%s", data.ea_path);
+	// printf("here->%s", data.we_path);
+	// printf("here->%s", data.so_path);
+	// printf("%d\n%d\n%c", data.h, data.w, data.direction);
+	// printf("%d, %d, %d\n", data.farr[0], data.farr[1], data.farr[2]);
+	// printf("%d, %d, %d\n", data.carr[0], data.carr[1], data.carr[2]);
+	// printmap(data.cub_map);
 }
